@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Clip, Story } from 'src/entities/story.entity';
 
 @Injectable()
@@ -20,8 +20,28 @@ export class StoriesService {
     },
   ];
 
-  private findId(array: Array<any>, id: string) {
-    const item = array.find((item) => item.id === Number(id));
+  private messages = {
+    notStories: () => {
+      throw new NotFoundException('Not found any stories');
+    },
+    base: (source: string, id: number) => {
+      throw new NotFoundException(
+        `Not found the ${source} with id: ${id}, Try with another id`,
+      );
+    },
+    notStoryId: (id: number) => this.messages.base('story', id),
+    notClipId: (id: number) => this.messages.base('clip', id),
+  };
+
+  private findId(array: (Clip | Story)[], id: number): any {
+    const item = array.find((item) => item.id === id);
+    if (!item) {
+      if ((<Story>array[0]).clips !== undefined)
+        return this.messages.notStoryId(id);
+
+      return this.messages.notClipId(id);
+    }
+
     return [item, array.indexOf(item)];
   }
 
@@ -29,8 +49,15 @@ export class StoriesService {
     return array.reduce((prev, item) => [...prev, item.id], []);
   }
 
-  private delete(array: Array<any>, id: string) {
-    return array.filter((item) => item.id !== Number(id));
+  private delete(array: (Clip | Story)[], id: number): any {
+    if (!array.some((el) => el.id === id)) {
+      if ((<Story>array[0]).clips !== undefined)
+        return this.messages.notStoryId(id);
+
+      return this.messages.notClipId(id);
+    }
+
+    return array.filter((item) => item.id !== id);
   }
 
   private createId(ids: number[]) {
@@ -39,14 +66,17 @@ export class StoriesService {
   }
 
   getAll(): Story[] {
+    if (this.stories.length < 1) {
+      this.messages.notStories();
+    }
     return this.stories;
   }
 
-  getStory(id: string) {
+  getStory(id: number) {
     return this.findId(this.stories, id)[0];
   }
 
-  getClip(id: string, clipId: string) {
+  getClip(id: number, clipId: number) {
     const clips = this.findId(this.stories, id)[0].clips;
     return this.findId(clips, clipId)[0];
   }
@@ -67,7 +97,7 @@ export class StoriesService {
     return newStory;
   }
 
-  addClip(id: string, data) {
+  addClip(id: number, data) {
     const [story, index] = this.findId(this.stories, id);
 
     const ids = this.ids(story.clips);
@@ -80,23 +110,23 @@ export class StoriesService {
     return newClip;
   }
 
-  updateClip(id: string, clipId: string, data) {
+  updateClip(id: number, clipId: number, data) {
     const [story, index] = this.findId(this.stories, id);
-    const indexClip = this.findId(story.clips, clipId)[1];
+    const [clip, indexClip] = this.findId(story.clips, clipId);
 
     this.stories[index].clips[indexClip] = {
-      id: Number(clipId),
+      ...clip,
       ...data,
     };
-    if (indexClip === -1) return 'error';
+
     return this.stories[index].clips;
   }
 
-  deleteStory(id: string) {
+  deleteStory(id: number) {
     return (this.stories = this.delete(this.stories, id));
   }
 
-  deleteClip(id: string, clipId: string) {
+  deleteClip(id: number, clipId: number) {
     const [story, index] = this.findId(this.stories, id);
 
     return (this.stories[index].clips = this.delete(story.clips, clipId));
