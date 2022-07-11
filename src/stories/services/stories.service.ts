@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Clip, Story } from 'src/entities/story.entity';
+import { CreateClipDto, UpdateClipDto } from 'src/stories/dtos/clip.dto';
+import { Clip, Story } from 'src/stories/entities/story.entity';
 
 @Injectable()
 export class StoriesService {
@@ -81,7 +82,7 @@ export class StoriesService {
     return this.findId(clips, clipId)[0];
   }
 
-  createStory(data) {
+  createStory(data: CreateClipDto) {
     const ids = this.ids(this.stories);
     const newStory = {
       id: this.createId(ids),
@@ -97,7 +98,7 @@ export class StoriesService {
     return newStory;
   }
 
-  addClip(id: number, data) {
+  addClip(id: number, data: CreateClipDto) {
     const [story, index] = this.findId(this.stories, id);
 
     const ids = this.ids(story.clips);
@@ -110,7 +111,7 @@ export class StoriesService {
     return newClip;
   }
 
-  updateClip(id: number, clipId: number, data) {
+  updateClip(id: number, clipId: number, data: UpdateClipDto) {
     const [story, index] = this.findId(this.stories, id);
     const [clip, indexClip] = this.findId(story.clips, clipId);
 

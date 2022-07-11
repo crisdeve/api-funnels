@@ -10,8 +10,8 @@ import {
   HttpStatus,
   ParseIntPipe,
 } from '@nestjs/common';
-import { Story } from 'src/entities/story.entity';
-import { StoriesService } from 'src/services/stories.service';
+import { CreateClipDto, UpdateClipDto } from 'src/stories/dtos/clip.dto';
+import { StoriesService } from 'src/stories/services/stories.service';
 
 @Controller('stories')
 export class StoriesController {
@@ -37,12 +37,15 @@ export class StoriesController {
   }
 
   @Post()
-  createStory(@Body() payload: Story): object {
+  createStory(@Body() payload: CreateClipDto): object {
     return this.services.createStory(payload);
   }
 
   @Put(':id')
-  updateStory(@Param('id', ParseIntPipe) id: number, @Body() payload) {
+  updateStory(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() payload: CreateClipDto,
+  ) {
     return this.services.addClip(id, payload);
   }
 
@@ -50,7 +53,7 @@ export class StoriesController {
   updateClip(
     @Param('id', ParseIntPipe) id: number,
     @Param('clip', ParseIntPipe) clipId: number,
-    @Body() payload,
+    @Body() payload: UpdateClipDto,
   ) {
     return this.services.updateClip(id, clipId, payload);
   }
