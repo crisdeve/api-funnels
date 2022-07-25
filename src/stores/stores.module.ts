@@ -5,7 +5,7 @@ import { StoresService } from './services/stores/stores.service';
 
 @Module({
   controllers: [StoresController],
-  providers: [StoresService],
   imports: [StoriesModule],
+  providers: [StoresService],
 })
 export class StoresModule {}

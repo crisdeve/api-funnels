@@ -13,6 +13,6 @@ export class StoresController {
 
   @Get(':id/stories')
   getStoriesByStore(@Param('id', ParseIntPipe) id: number) {
-    return this.services.getStories(id);
+    return this.services.getStoreById(id);
   }
 }
