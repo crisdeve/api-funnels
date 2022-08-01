@@ -1,23 +1,18 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateClipDto, UpdateClipDto } from 'src/stories/dtos/clip.dto';
-import { Clip, Story } from 'src/stories/entities/story.entity';
+import { CreateClipDto } from 'src/clips/dtos/clip.dto';
+import { Clip } from 'src/clips/entities/clip.entity';
+import { ClipsService } from 'src/clips/services/clips.service';
+import { Story } from 'src/stories/entities/story.entity';
 
 @Injectable()
 export class StoriesService {
+  constructor(private clipsServices: ClipsService) {}
+
   private stories: Story[] = [
     {
       id: 1,
-      clips: [
-        {
-          id: 1,
-          file: 'https://hardcode/video.mp4',
-          comment: 'Other comment',
-        },
-        {
-          id: 2,
-          file: 'https://hardcode/video_2.mp4',
-        },
-      ],
+      storeId: 1,
+      clips: [1, 2],
     },
   ];
 
@@ -50,15 +45,15 @@ export class StoriesService {
     return array.reduce((prev, item) => [...prev, item.id], []);
   }
 
-  private delete(array: (Clip | Story)[], id: number): any {
-    if (!array.some((el) => el.id === id)) {
+  private delete(array: (number | Story)[], id: number): any {
+    if (!array.some((el) => el === id)) {
       if ((<Story>array[0]).clips !== undefined)
         return this.messages.notStoryId(id);
 
       return this.messages.notClipId(id);
     }
 
-    return array.filter((item) => item.id !== id);
+    return array.filter((item) => item !== id);
   }
 
   private createId(ids: number[]) {
@@ -77,41 +72,36 @@ export class StoriesService {
     return this.findId(this.stories, id)[0];
   }
 
-  getClip(id: number, clipId: number) {
+  /* getClip(id: number, clipId: number) {
     const clips = this.findId(this.stories, id)[0].clips;
     return this.findId(clips, clipId)[0];
-  }
+  } */
 
-  createStory(data: CreateClipDto) {
+  createStory(id: number, data: CreateClipDto) {
     const ids = this.ids(this.stories);
-    const newStory = {
+    const newIdClip: any = this.clipsServices.addClip(data)[1];
+
+    const newStory: Story = {
       id: this.createId(ids),
-      clips: [
-        {
-          id: 0,
-          ...data,
-        },
-      ],
+      storeId: id,
+      clips: [newIdClip],
     };
+
     this.stories.push(newStory);
 
     return newStory;
   }
 
   addClip(id: number, data: CreateClipDto) {
-    const [story, index] = this.findId(this.stories, id);
+    const index = this.findId(this.stories, id)[1];
+    const newIdClip: any = this.clipsServices.addClip(data)[1];
 
-    const ids = this.ids(story.clips);
-    const newClip: Clip = {
-      id: this.createId(ids),
-      ...data,
-    };
-    this.stories[index].clips.push(newClip);
+    this.stories[index].clips.push(newIdClip);
 
-    return newClip;
+    return this.stories[index];
   }
 
-  updateClip(id: number, clipId: number, data: UpdateClipDto) {
+  /* updateClip(id: number, clipId: number, data: UpdateClipDto) {
     const [story, index] = this.findId(this.stories, id);
     const [clip, indexClip] = this.findId(story.clips, clipId);
 
@@ -121,7 +111,7 @@ export class StoriesService {
     };
 
     return this.stories[index].clips;
-  }
+  } */
 
   deleteStory(id: number) {
     return (this.stories = this.delete(this.stories, id));
@@ -129,6 +119,7 @@ export class StoriesService {
 
   deleteClip(id: number, clipId: number) {
     const [story, index] = this.findId(this.stories, id);
+    this.clipsServices.deleteClip(clipId);
 
     return (this.stories[index].clips = this.delete(story.clips, clipId));
   }

@@ -1,14 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Store } from 'src/stores/entities/store.entity';
+import { Story } from 'src/stories/entities/story.entity';
 import { StoriesService } from 'src/stories/services/stories.service';
+import { Master } from 'src/utils/Master';
 
 @Injectable()
-export class StoresService {
+export class StoresService extends Master {
   constructor(
     private storiesServices: StoriesService,
     private config: ConfigService,
-  ) {}
+  ) {
+    super();
+  }
 
   private stores: Store[] = [
     {
@@ -26,15 +30,12 @@ export class StoresService {
   }
 
   getStoreById(id: number): any {
-    return id + ' -- ' + this.config.get('API_KEY');
-    /* return this.findId(this.stores, id); */
+    return super.findId(this.stores, id)[0];
   }
 
-  getStories(id: number): Store {
-    return {
-      id,
-      name: 'sss',
-      stories: this.storiesServices.getAll(),
-    };
+  getStoriesStore(id: number): Story[] {
+    const allStories: Story[] = this.storiesServices.getAll();
+
+    return allStories.filter(({ storeId }) => storeId === id);
   }
 }

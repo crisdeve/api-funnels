@@ -1,6 +1,6 @@
 import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 import { Store } from 'src/stores/entities/store.entity';
-import { StoresService } from 'src/stores/services/stores/stores.service';
+import { StoresService } from 'src/stores/services/stores.service';
 
 @Controller('stores')
 export class StoresController {
@@ -11,8 +11,13 @@ export class StoresController {
     return this.services.getAll();
   }
 
+  @Get(':id')
+  getStore(@Param('id', ParseIntPipe) id: number) {
+    return this.services.getStoreById(id);
+  }
+
   @Get(':id/stories')
   getStoriesByStore(@Param('id', ParseIntPipe) id: number) {
-    return this.services.getStoreById(id);
+    return this.services.getStoriesStore(id);
   }
 }

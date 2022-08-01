@@ -1,5 +1,10 @@
-import { Clip } from 'src/stories/entities/story.entity';
+import { IsNotEmpty, IsNumber } from 'class-validator';
 
-export class storyDto {
-  readonly clips: Array<Clip>;
+export class CreateStoryDto {
+  @IsNumber()
+  @IsNotEmpty()
+  readonly storeId: number;
+
+  @IsNotEmpty()
+  readonly clips: number[];
 }
