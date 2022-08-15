@@ -38,7 +38,7 @@ export class StoriesController {
     @Param('id', ParseIntPipe) id: number,
     @Body() payload: CreateClipDto,
   ) {
-    return this.servicesStories.addClip(id, payload);
+    return this.servicesStories.addClipStory(id, payload);
   }
 
   @Delete(':id')

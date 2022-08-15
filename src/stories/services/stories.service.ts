@@ -69,21 +69,28 @@ export class StoriesService {
   }
 
   getStory(id: number) {
-    return this.findId(this.stories, id)[0];
+    const story = {
+      ...this.findId(this.stories, id)[0],
+    };
+
+    let clips = [];
+
+    story.clips.map((i) => {
+      clips = [...clips, this.clipsServices.getClip(i)];
+    });
+
+    story.clips = clips;
+
+    return story;
   }
 
-  /* getClip(id: number, clipId: number) {
-    const clips = this.findId(this.stories, id)[0].clips;
-    return this.findId(clips, clipId)[0];
-  } */
-
-  createStory(id: number, data: CreateClipDto) {
+  createStory(storeId: number, data: CreateClipDto) {
     const ids = this.ids(this.stories);
     const newIdClip: any = this.clipsServices.addClip(data)[1];
 
     const newStory: Story = {
       id: this.createId(ids),
-      storeId: id,
+      storeId: storeId,
       clips: [newIdClip],
     };
 
@@ -92,7 +99,7 @@ export class StoriesService {
     return newStory;
   }
 
-  addClip(id: number, data: CreateClipDto) {
+  addClipStory(id: number, data: CreateClipDto) {
     const index = this.findId(this.stories, id)[1];
     const newIdClip: any = this.clipsServices.addClip(data)[1];
 
@@ -101,20 +108,11 @@ export class StoriesService {
     return this.stories[index];
   }
 
-  /* updateClip(id: number, clipId: number, data: UpdateClipDto) {
-    const [story, index] = this.findId(this.stories, id);
-    const [clip, indexClip] = this.findId(story.clips, clipId);
-
-    this.stories[index].clips[indexClip] = {
-      ...clip,
-      ...data,
-    };
-
-    return this.stories[index].clips;
-  } */
-
   deleteStory(id: number) {
-    return (this.stories = this.delete(this.stories, id));
+    const story = this.findId(this.stories, id)[0];
+    this.clipsServices.deleteClips(story.clips);
+
+    return (this.stories = this.stories.filter((item) => item.id !== id));
   }
 
   deleteClip(id: number, clipId: number) {

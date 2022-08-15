@@ -18,7 +18,7 @@ export class ClipsController {
     return this.services.getAll();
   }
 
-  @Get()
+  @Get(':id')
   getClipById(@Param('id', ParseIntPipe) id: number) {
     return this.services.getClip(id);
   }

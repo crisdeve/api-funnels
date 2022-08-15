@@ -57,4 +57,11 @@ export class ClipsService extends Master {
   deleteClip(id: number) {
     return (this.clips = super.delete(this.clips, id));
   }
+
+  deleteClips(ids: number[]) {
+    return (this.clips = this.clips.filter((clip) => {
+      if (ids.some((id) => id === clip.id)) return;
+      return clip;
+    }));
+  }
 }

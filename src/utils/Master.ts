@@ -17,4 +17,8 @@ export class Master {
     if (!array.some((el) => el.id === id)) return;
     return array.filter((item) => item.id !== id);
   }
+
+  deleteAll(array: any[], ids: number[]): number[] {
+    return array.filter((item) => !ids.some((id) => id === item));
+  }
 }
