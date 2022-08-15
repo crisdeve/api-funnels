@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { Store } from 'src/stores/entities/store.entity';
 import { Story } from 'src/stories/entities/story.entity';
 import { StoriesService } from 'src/stories/services/stories.service';
@@ -7,10 +6,7 @@ import { Master } from 'src/utils/Master';
 
 @Injectable()
 export class StoresService extends Master {
-  constructor(
-    private storiesServices: StoriesService,
-    private config: ConfigService,
-  ) {
+  constructor(private storiesServices: StoriesService) {
     super();
   }
 
