@@ -30,4 +30,18 @@ export class ClipsController {
   ) {
     return this.services.updateClip(id, payload);
   }
+
+  @Put(':id/options')
+  addOption(@Param('id', ParseIntPipe) id: number, @Body() payload: any) {
+    return this.services.addNewOption(id, payload);
+  }
+
+  @Put(':id/options/:idOption')
+  updateOption(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('idOption', ParseIntPipe) idOption: number,
+    @Body() payload: any,
+  ) {
+    return this.services.updateOptions(id, idOption, payload);
+  }
 }

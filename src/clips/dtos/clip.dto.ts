@@ -5,7 +5,7 @@ import {
   IsString,
   IsUrl,
 } from 'class-validator';
-import { PartialType } from '@nestjs/swagger';
+import { PartialType } from '@nestjs/mapped-types';
 
 export class CreateClipDto {
   @IsUrl()
@@ -19,7 +19,7 @@ export class CreateClipDto {
 
   @IsBoolean()
   @IsNotEmpty()
-  readonly isSponsor: boolean;
+  readonly sponsor: boolean;
 
   /* IS_SUBSCRIPTION_SPONSOR: BOOLEAN */
 
@@ -28,6 +28,8 @@ export class CreateClipDto {
   /* BACKGROUND: #FF00CC */
 
   /* ORDER_OPTIONS */
+
+  /* OPTIONS: [] */
 }
 
 export class UpdateClipDto extends PartialType(CreateClipDto) {}

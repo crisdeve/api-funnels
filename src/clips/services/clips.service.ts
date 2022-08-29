@@ -13,11 +13,31 @@ export class ClipsService extends Master {
     {
       id: 1,
       file: 'https://hardcode/video.mp4',
-      comment: 'Other comment',
+      comment: `What's your favorite food ?`,
+      sponsor: true,
+      subscription: false,
+      viewOptions: 1,
+      orderOptions: [0, 3, 5],
+      options: [
+        {
+          id: 0,
+          label: 'Every 1 months',
+        },
+        {
+          id: 5,
+          label: 'Every 2 months',
+        },
+        {
+          id: 3,
+          label: 'Every 3 months',
+        },
+      ],
     },
     {
       id: 2,
       file: 'https://hardcode/video_2.mp4',
+      sponsor: false,
+      subscription: false,
     },
   ];
 
@@ -63,5 +83,37 @@ export class ClipsService extends Master {
       if (ids.some((id) => id === clip.id)) return;
       return clip;
     }));
+  }
+
+  /**
+   * options services
+   */
+  addNewOption(id: number, data: any) {
+    const [clip, index] = this.findId(this.clips, id);
+    const idOption: number = super.createId(clip.orderOptions);
+
+    const newOption = {
+      id: idOption,
+      ...data,
+    };
+
+    this.clips[index].options.push(newOption);
+    this.clips[index].orderOptions.push(idOption);
+
+    return this.clips[index].options;
+  }
+
+  updateOptions(id: number, idOption: number, data: any) {
+    const [clip, index] = this.findId(this.clips, id);
+    const [option, indexOp] = this.findId(clip.options, idOption);
+
+    const update = {
+      ...option,
+      ...data,
+    };
+
+    this.clips[index].options[indexOp] = update;
+
+    return this.clips[index].options;
   }
 }
