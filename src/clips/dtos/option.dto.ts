@@ -1,20 +1,29 @@
-/* import {
-  IsBoolean,
+import {
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   IsUrl,
-} from 'class-validator'; */
+} from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
 
 export class CreateOptionDto {
-  /* :ID */
-  /* LABEL */
-  /* IMAGE */
-  /* ORDER */
-  /* VARIANT_ID (op) */
-  /* IS_OPTION_SUBSCRIPTION */
-  /* FREQUENCY (op) */
+  @IsString()
+  @IsNotEmpty()
+  readonly label: string;
+
+  @IsUrl()
+  @IsNotEmpty()
+  @IsOptional()
+  readonly image: string;
+
+  @IsNumber()
+  @IsOptional()
+  readonly variantID: number;
+
+  @IsNumber()
+  @IsOptional()
+  readonly frequencyID: number;
 }
 
-export class UpdateClipDto extends PartialType(CreateOptionDto) {}
+export class UpdateOptionDto extends PartialType(CreateOptionDto) {}

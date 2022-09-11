@@ -1,11 +1,16 @@
 import {
+  IsArray,
   IsBoolean,
+  IsHexColor,
   IsNotEmpty,
   IsOptional,
   IsString,
   IsUrl,
+  Max,
+  Min,
 } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
+import { Option } from '../entities/option.entity';
 
 export class CreateClipDto {
   @IsUrl()
@@ -21,15 +26,26 @@ export class CreateClipDto {
   @IsNotEmpty()
   readonly sponsor: boolean;
 
-  /* IS_SUBSCRIPTION_SPONSOR: BOOLEAN */
+  @IsOptional()
+  @IsBoolean()
+  readonly isSubcriptionSponsor: boolean;
 
-  /* VIEW_OPTIONS: 1|2|3 */
+  @Min(1)
+  @Max(3)
+  @IsNotEmpty()
+  readonly viewOptions: number;
 
-  /* BACKGROUND: #FF00CC */
+  @IsOptional()
+  @IsHexColor()
+  readonly backgroundColor: string;
 
-  /* ORDER_OPTIONS */
+  @IsArray()
+  @IsOptional()
+  readonly orderOptions: number[];
 
-  /* OPTIONS: [] */
+  @IsArray()
+  @IsOptional()
+  readonly options: Option[];
 }
 
 export class UpdateClipDto extends PartialType(CreateClipDto) {}

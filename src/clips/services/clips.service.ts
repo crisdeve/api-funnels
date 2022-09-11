@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateClipDto, UpdateClipDto } from '../dtos/clip.dto';
 import { Master } from 'src/utils/Master';
 import { Clip } from '../entities/clip.entity';
+import { CreateOptionDto, UpdateOptionDto } from '../dtos/option.dto';
 
 @Injectable()
 export class ClipsService extends Master {
@@ -88,7 +89,7 @@ export class ClipsService extends Master {
   /**
    * options services
    */
-  addNewOption(id: number, data: any) {
+  addNewOption(id: number, data: CreateOptionDto) {
     const [clip, index] = this.findId(this.clips, id);
     const idOption: number = super.createId(clip.orderOptions);
 
@@ -103,7 +104,7 @@ export class ClipsService extends Master {
     return this.clips[index].options;
   }
 
-  updateOptions(id: number, idOption: number, data: any) {
+  updateOptions(id: number, idOption: number, data: UpdateOptionDto) {
     const [clip, index] = this.findId(this.clips, id);
     const [option, indexOp] = this.findId(clip.options, idOption);
 
