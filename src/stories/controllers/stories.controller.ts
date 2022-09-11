@@ -10,7 +10,9 @@ import {
 } from '@nestjs/common';
 import { CreateClipDto } from 'src/clips/dtos/clip.dto';
 import { StoriesService } from 'src/stories/services/stories.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('stories')
 @Controller('stories')
 export class StoriesController {
   constructor(private servicesStories: StoriesService) {}

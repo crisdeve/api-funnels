@@ -9,7 +9,9 @@ import {
 import { UpdateClipDto } from '../dtos/clip.dto';
 import { CreateOptionDto, UpdateOptionDto } from '../dtos/option.dto';
 import { ClipsService } from '../services/clips.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('clips')
 @Controller('clips')
 export class ClipsController {
   constructor(private services: ClipsService) {}

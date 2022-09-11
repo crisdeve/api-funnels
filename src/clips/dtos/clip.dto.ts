@@ -9,8 +9,8 @@ import {
   Max,
   Min,
 } from 'class-validator';
-import { PartialType } from '@nestjs/mapped-types';
 import { Option } from '../entities/option.entity';
+import { PartialType } from '@nestjs/swagger';
 
 export class CreateClipDto {
   @IsUrl()
