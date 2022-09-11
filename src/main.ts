@@ -20,7 +20,6 @@ async function bootstrap() {
       `From our API, we create Shopify funnels to optimaze the merchant's sales`,
     )
     .setVersion('1.0')
-    .addTag('funnels, sales, Shopify')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);

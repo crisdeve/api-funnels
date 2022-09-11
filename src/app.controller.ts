@@ -3,8 +3,9 @@ import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
+  /*
   constructor(private readonly appService: AppService) {}
-
+  
   @Get()
   getHello(): string {
     return this.appService.getHello();
@@ -25,14 +26,12 @@ export class AppController {
     return ` Funnel ${id} and step ${step}`;
   }
 
-  /* desestructuring of query */
   @Get('products')
   getFilter(@Query() query: any) {
     const { limit, offset } = query;
     return `Filter by -> limit: ${limit} offset: ${offset}`;
   }
 
-  /* query by type */
   @Get('funnels')
   getFilterByTypo(
     @Query('limit') limit: number,
@@ -43,4 +42,5 @@ export class AppController {
       Filter by -> limit: ${limit} offset: ${offset} type: ${type}
     `;
   }
+  */
 }

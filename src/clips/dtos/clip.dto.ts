@@ -40,7 +40,6 @@ export class CreateClipDto {
   readonly backgroundColor: string;
 
   @IsArray()
-  @IsOptional()
   readonly orderOptions: number[];
 
   @IsArray()
