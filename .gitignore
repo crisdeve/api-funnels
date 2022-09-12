@@ -3,6 +3,9 @@
 /node_modules
 *.env
 
+# mongoDB
+mongo_data
+
 # Logs
 logs
 *.log

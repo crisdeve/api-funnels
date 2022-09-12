@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateClipDto } from 'src/clips/dtos/clip.dto';
 import { Store } from 'src/stores/entities/store.entity';
 import { Story } from 'src/stories/entities/story.entity';
@@ -7,7 +7,10 @@ import { Master } from 'src/utils/Master';
 
 @Injectable()
 export class StoresService extends Master {
-  constructor(private storiesServices: StoriesService) {
+  constructor(
+    private storiesServices: StoriesService,
+    @Inject('mongo') private db,
+  ) {
     super();
   }
 
@@ -30,7 +33,7 @@ export class StoresService extends Master {
     return super.findId(this.stores, id)[0];
   }
 
-  getStoriesByStore(id: number): Story[] {
+  /*   getStoriesByStore(id: number): Story[] {
     const allStories: Story[] = this.storiesServices.getAll();
 
     return allStories.filter(({ storeId }) => storeId === id);
@@ -38,5 +41,12 @@ export class StoresService extends Master {
 
   addStoryStore(id: number, payload: CreateClipDto): Story {
     return this.storiesServices.createStory(id, payload);
+  } */
+
+  requestDataTest() {
+    const stories = this.db.collection('stories');
+    const data = stories.find().toArray();
+
+    return data;
   }
 }

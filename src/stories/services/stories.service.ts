@@ -1,4 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { CreateClipDto } from 'src/clips/dtos/clip.dto';
 import { Clip } from 'src/clips/entities/clip.entity';
 import { ClipsService } from 'src/clips/services/clips.service';
@@ -6,15 +8,10 @@ import { Story } from 'src/stories/entities/story.entity';
 
 @Injectable()
 export class StoriesService {
-  constructor(private clipsServices: ClipsService) {}
-
-  private stories: Story[] = [
-    {
-      id: 1,
-      storeId: 1,
-      clips: [1, 2],
-    },
-  ];
+  constructor(
+    private clipsServices: ClipsService,
+    @InjectModel(Story.name) private stories: Model<Story>,
+  ) {}
 
   private messages = {
     notStories: () => {
@@ -61,17 +58,16 @@ export class StoriesService {
     return Math.max(...ids) + 1;
   }
 
-  getAll(): Story[] {
-    if (this.stories.length < 1) {
-      this.messages.notStories();
-    }
-    return this.stories;
+  async getAll() {
+    return await this.stories.find().exec();
   }
 
-  getStory(id: number) {
-    const story = {
+  async getStory(id: number) {
+    /* const story = {
       ...this.findId(this.stories, id)[0],
-    };
+    }; */
+
+    const story = await this.stories.findById(id);
 
     let clips = [];
 
@@ -84,7 +80,7 @@ export class StoriesService {
     return story;
   }
 
-  createStory(storeId: number, data: CreateClipDto) {
+  /*  createStory(storeId: number, data: CreateClipDto) {
     const ids = this.ids(this.stories);
     const newIdClip: any = this.clipsServices.addClip(data)[1];
 
@@ -120,5 +116,5 @@ export class StoriesService {
     this.clipsServices.deleteClip(clipId);
 
     return (this.stories[index].clips = this.delete(story.clips, clipId));
-  }
+  } */
 }

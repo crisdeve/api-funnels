@@ -27,7 +27,7 @@ export class StoresController {
     return this.services.getStoreById(id);
   }
 
-  @Get(':id/stories')
+  /* @Get(':id/stories')
   getStoriesByStore(@Param('id', ParseIntPipe) id: number): Story[] {
     return this.services.getStoriesByStore(id);
   }
@@ -38,5 +38,10 @@ export class StoresController {
     @Body() payload: CreateClipDto,
   ): Story {
     return this.services.addStoryStore(id, payload);
+  } */
+
+  @Get(':id/test')
+  testDB() {
+    return this.services.requestDataTest();
   }
 }

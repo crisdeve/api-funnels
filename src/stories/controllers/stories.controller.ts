@@ -18,16 +18,16 @@ export class StoriesController {
   constructor(private servicesStories: StoriesService) {}
 
   @Get()
-  getStories(): Story[] {
+  getStories() {
     return this.servicesStories.getAll();
   }
 
   @Get(':id')
-  getStory(@Param('id', ParseIntPipe) id: number): Story {
+  getStory(@Param('id', ParseIntPipe) id: number) {
     return this.servicesStories.getStory(id);
   }
 
-  @Put(':id')
+  /* @Put(':id')
   updateStory(
     @Param('id', ParseIntPipe) id: number,
     @Body() payload: CreateClipDto,
@@ -46,5 +46,5 @@ export class StoriesController {
     @Param('clip', ParseIntPipe) clipId: number,
   ): number[] {
     return this.servicesStories.deleteClip(id, clipId);
-  }
+  } */
 }
