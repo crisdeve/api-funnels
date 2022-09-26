@@ -26,95 +26,67 @@ export class StoriesService {
     notClipId: (id: number) => this.messages.base('clip', id),
   };
 
-  private findId(array: (Clip | Story)[], id: number): any {
-    const item = array.find((item) => item.id === id);
-    if (!item) {
-      if ((<Story>array[0]).clips !== undefined)
-        return this.messages.notStoryId(id);
-
-      return this.messages.notClipId(id);
-    }
-
-    return [item, array.indexOf(item)];
-  }
-
-  private ids(array: Array<any>) {
-    return array.reduce((prev, item) => [...prev, item.id], []);
-  }
-
-  private delete(array: (number | Story)[], id: number): any {
-    if (!array.some((el) => el === id)) {
-      if ((<Story>array[0]).clips !== undefined)
-        return this.messages.notStoryId(id);
-
-      return this.messages.notClipId(id);
-    }
-
-    return array.filter((item) => item !== id);
-  }
-
-  private createId(ids: number[]) {
-    if (ids.length === 0) return 0;
-    return Math.max(...ids) + 1;
-  }
-
   async getAll() {
     return await this.stories.find().exec();
   }
 
-  async getStory(id: number) {
-    /* const story = {
-      ...this.findId(this.stories, id)[0],
-    }; */
+  async getStory(id: string) {
+    const story = await this.stories.findById(id).exec();
+    return story;
+  }
 
-    const story = await this.stories.findById(id);
+  createStory(storeId: number, data: CreateClipDto) {
+    const idClip = this.clipsServices.addClip(data);
 
-    let clips = [];
+    const dataStory = {
+      storeId,
+      clips: [idClip],
+    };
 
-    story.clips.map((i) => {
-      clips = [...clips, this.clipsServices.getClip(i)];
-    });
+    const createStory = new this.stories(dataStory);
 
-    story.clips = clips;
+    return createStory.save();
+  }
+
+  async addClipStory(id: string, data: CreateClipDto) {
+    const idClip = this.clipsServices.addClip(data);
+
+    const storyById = await this.stories.findById(id).exec();
+
+    const newData = {
+      clips: [...storyById.clips, idClip],
+    };
+
+    const story = this.stories
+      .findByIdAndUpdate(id, { $set: newData }, { new: true })
+      .exec();
+
+    if (!story) return;
 
     return story;
   }
 
-  /*  createStory(storeId: number, data: CreateClipDto) {
-    const ids = this.ids(this.stories);
-    const newIdClip: any = this.clipsServices.addClip(data)[1];
+  async deleteStory(id: string) {
+    const storyById = await this.stories.findById(id).exec();
 
-    const newStory: Story = {
-      id: this.createId(ids),
-      storeId: storeId,
-      clips: [newIdClip],
-    };
+    this.clipsServices.deleteClips(storyById.clips);
 
-    this.stories.push(newStory);
-
-    return newStory;
+    return this.stories.findByIdAndDelete(id).exec();
   }
 
-  addClipStory(id: number, data: CreateClipDto) {
-    const index = this.findId(this.stories, id)[1];
-    const newIdClip: any = this.clipsServices.addClip(data)[1];
-
-    this.stories[index].clips.push(newIdClip);
-
-    return this.stories[index];
-  }
-
-  deleteStory(id: number) {
-    const story = this.findId(this.stories, id)[0];
-    this.clipsServices.deleteClips(story.clips);
-
-    return (this.stories = this.stories.filter((item) => item.id !== id));
-  }
-
-  deleteClip(id: number, clipId: number) {
-    const [story, index] = this.findId(this.stories, id);
+  async deleteClip(id: string, clipId: string) {
     this.clipsServices.deleteClip(clipId);
 
-    return (this.stories[index].clips = this.delete(story.clips, clipId));
-  } */
+    const storyById = await this.stories.findById(id).exec();
+
+    const newData = {
+      clips: storyById.clips.filter((id) => id !== clipId),
+    };
+
+    const story = this.stories
+      .findByIdAndUpdate(id, { $set: newData }, { new: true })
+      .exec();
+
+    return story;
+  }
 }

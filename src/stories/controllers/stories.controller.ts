@@ -23,28 +23,22 @@ export class StoriesController {
   }
 
   @Get(':id')
-  getStory(@Param('id', ParseIntPipe) id: number) {
+  getStory(@Param('id') id: string) {
     return this.servicesStories.getStory(id);
   }
 
-  /* @Put(':id')
-  updateStory(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() payload: CreateClipDto,
-  ): Story {
+  @Put(':id')
+  updateStory(@Param('id') id: string, @Body() payload: CreateClipDto) {
     return this.servicesStories.addClipStory(id, payload);
   }
 
   @Delete(':id')
-  deleteStory(@Param('id', ParseIntPipe) id: number): Story[] {
+  deleteStory(@Param('id') id: string) {
     return this.servicesStories.deleteStory(id);
   }
 
   @Delete(':id/clips/:clip')
-  deleteClip(
-    @Param('id', ParseIntPipe) id: number,
-    @Param('clip', ParseIntPipe) clipId: number,
-  ): number[] {
+  deleteClip(@Param('id') id: string, @Param('clip') clipId: string) {
     return this.servicesStories.deleteClip(id, clipId);
-  } */
+  }
 }

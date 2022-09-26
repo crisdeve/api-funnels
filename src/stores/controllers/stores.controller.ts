@@ -31,14 +31,15 @@ export class StoresController {
   getStoriesByStore(@Param('id', ParseIntPipe) id: number): Story[] {
     return this.services.getStoriesByStore(id);
   }
+   */
 
   @Post(':id/stories')
   createStory(
     @Param('id', ParseIntPipe) id: number,
     @Body() payload: CreateClipDto,
-  ): Story {
+  ) {
     return this.services.addStoryStore(id, payload);
-  } */
+  }
 
   @Get(':id/test')
   testDB() {

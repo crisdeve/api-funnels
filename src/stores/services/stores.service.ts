@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { async } from 'rxjs';
 import { CreateClipDto } from 'src/clips/dtos/clip.dto';
 import { Store } from 'src/stores/entities/store.entity';
 import { Story } from 'src/stories/entities/story.entity';
@@ -38,10 +39,11 @@ export class StoresService extends Master {
 
     return allStories.filter(({ storeId }) => storeId === id);
   }
+   */
 
-  addStoryStore(id: number, payload: CreateClipDto): Story {
-    return this.storiesServices.createStory(id, payload);
-  } */
+  async addStoryStore(id: number, payload: CreateClipDto) {
+    return await this.storiesServices.createStory(id, payload);
+  }
 
   requestDataTest() {
     const stories = this.db.collection('stories');

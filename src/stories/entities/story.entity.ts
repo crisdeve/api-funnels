@@ -6,8 +6,8 @@ export class Story extends Document {
   @Prop({ required: true })
   storeId: string;
 
-  @Prop({ required: true })
-  clips: number[];
+  @Prop([String])
+  clips: string[];
 }
 
 export const StorySchema = SchemaFactory.createForClass(Story);

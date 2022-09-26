@@ -4,14 +4,16 @@ import { Master } from 'src/utils/Master';
 import { Clip } from '../entities/clip.entity';
 import { CreateOptionDto, UpdateOptionDto } from '../dtos/option.dto';
 import { Option } from '../entities/option.entity';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class ClipsService extends Master {
-  constructor() {
+  constructor(@InjectModel(Clip.name) private clips: Model<Clip>) {
     super();
   }
 
-  private clips: Clip[] = [
+  /* private clips: Clip[] = [
     {
       id: 1,
       file: 'https://hardcode/video.mp4',
@@ -41,30 +43,40 @@ export class ClipsService extends Master {
       sponsor: false,
       subscription: false,
     },
-  ];
+  ]; */
 
-  getAll() {
-    return this.clips;
+  async getAll() {
+    return await this.clips.find().exec();
   }
 
-  getClip(id: number) {
-    return super.findId(this.clips, id)[0];
+  async getClip(id: string) {
+    const clipById = await this.clips.findById(id).exec();
+    return clipById;
   }
 
-  addClip(data: CreateClipDto): (Clip | number)[] {
-    const ids = super.ids(this.clips);
-    const id = super.createId(ids);
+  addClip(data: CreateClipDto) {
+    const createClip = new this.clips(data);
+    createClip.save();
 
-    const newClip: Clip = {
-      id: id,
-      ...data,
-    };
-
-    this.clips.push(newClip);
-
-    return [newClip, id];
+    return createClip._id.toString();
   }
 
+  deleteClips(ids: string[]) {
+    let allDelete = true;
+
+    ids.forEach((id) => {
+      const deleteExec = this.clips.findByIdAndDelete(id).exec();
+      if (!deleteExec) allDelete = false;
+    });
+
+    return allDelete;
+  }
+
+  deleteClip(id: string) {
+    return this.clips.findByIdAndDelete(id).exec();
+  }
+
+  /*
   updateClip(id: number, data: UpdateClipDto) {
     const [clip, index] = this.findId(this.clips, id);
 
@@ -76,20 +88,6 @@ export class ClipsService extends Master {
     return this.clips[index];
   }
 
-  deleteClip(id: number) {
-    return (this.clips = super.delete(this.clips, id));
-  }
-
-  deleteClips(ids: number[]) {
-    return (this.clips = this.clips.filter((clip) => {
-      if (ids.some((id) => id === clip.id)) return;
-      return clip;
-    }));
-  }
-
-  /**
-   * options services
-   */
   addNewOption(id: number, data: CreateOptionDto): Option[] {
     const [clip, index] = this.findId(this.clips, id);
     const idOption: number = super.createId(clip.orderOptions);
@@ -118,4 +116,5 @@ export class ClipsService extends Master {
 
     return this.clips[index].options;
   }
+  */
 }

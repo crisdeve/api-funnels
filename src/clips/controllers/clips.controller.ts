@@ -19,15 +19,16 @@ export class ClipsController {
   constructor(private services: ClipsService) {}
 
   @Get()
-  getClips(): Clip[] {
+  getClips() {
     return this.services.getAll();
   }
 
   @Get(':id')
-  getClipById(@Param('id', ParseIntPipe) id: number): Clip {
+  getClipById(@Param('id') id: string) {
     return this.services.getClip(id);
   }
 
+  /* 
   @Put(':id')
   updateClip(
     @Param('id', ParseIntPipe) id: number,
@@ -51,5 +52,5 @@ export class ClipsController {
     @Body() payload: UpdateOptionDto,
   ): Option[] {
     return this.services.updateOptions(id, idOption, payload);
-  }
+  } */
 }

@@ -1,6 +1,9 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+
 import { Option } from './option.entity';
 
-export class Clip {
+/* interface ClipI {
   id: number;
   file?: string;
   comment?: string;
@@ -10,4 +13,33 @@ export class Clip {
   background?: string;
   orderOptions?: number[];
   options?: Option[];
+} */
+
+@Schema()
+export class Clip extends Document {
+  @Prop()
+  file?: string;
+
+  @Prop()
+  comment?: string;
+
+  @Prop()
+  sponsor?: boolean;
+
+  @Prop()
+  isSubcriptionSponsor?: boolean;
+
+  @Prop()
+  viewOptions?: number;
+
+  @Prop()
+  background?: string;
+
+  @Prop([Number])
+  orderOptions?: number[];
+
+  @Prop()
+  options?: Option[];
 }
+
+export const ClipSchema = SchemaFactory.createForClass(Clip);
