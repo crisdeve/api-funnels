@@ -1,16 +1,8 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Put,
-  ParseIntPipe,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
 import { CreateClipDto } from 'src/clips/dtos/clip.dto';
 import { StoriesService } from 'src/stories/services/stories.service';
 import { ApiTags } from '@nestjs/swagger';
-import { Story } from '../entities/story.entity';
+import { MongoIdPipe } from 'src/common/mongo-id.pipe';
 
 @ApiTags('stories')
 @Controller('stories')
@@ -23,22 +15,28 @@ export class StoriesController {
   }
 
   @Get(':id')
-  getStory(@Param('id') id: string) {
+  getStory(@Param('id', MongoIdPipe) id: string) {
     return this.servicesStories.getStory(id);
   }
 
   @Put(':id')
-  updateStory(@Param('id') id: string, @Body() payload: CreateClipDto) {
+  updateStory(
+    @Param('id', MongoIdPipe) id: string,
+    @Body() payload: CreateClipDto,
+  ) {
     return this.servicesStories.addClipStory(id, payload);
   }
 
   @Delete(':id')
-  deleteStory(@Param('id') id: string) {
+  deleteStory(@Param('id', MongoIdPipe) id: string) {
     return this.servicesStories.deleteStory(id);
   }
 
   @Delete(':id/clips/:clip')
-  deleteClip(@Param('id') id: string, @Param('clip') clipId: string) {
+  deleteClip(
+    @Param('id', MongoIdPipe) id: string,
+    @Param('clip', MongoIdPipe) clipId: string,
+  ) {
     return this.servicesStories.deleteClip(id, clipId);
   }
 }

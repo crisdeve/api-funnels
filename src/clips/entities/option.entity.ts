@@ -1,7 +1,17 @@
-export interface Option {
-  id: number;
+import { IsNumber, IsOptional, IsString } from 'class-validator';
+
+export class Option {
+  @IsString()
   label: string;
-  image?: string;
-  variantId?: number;
-  frequency?: number;
+
+  @IsString()
+  image: string;
+
+  @IsNumber()
+  @IsOptional()
+  variantId: number;
+
+  @IsNumber()
+  @IsOptional()
+  frequency: number;
 }

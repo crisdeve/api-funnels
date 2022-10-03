@@ -1,10 +1,10 @@
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsMongoId, IsNotEmpty } from 'class-validator';
 
 export class CreateStoryDto {
-  @IsNumber()
+  @IsMongoId()
   @IsNotEmpty()
-  readonly storeId: number;
+  readonly storeId: string;
 
   @IsNotEmpty()
-  readonly clips: number[];
+  readonly clips: string[];
 }

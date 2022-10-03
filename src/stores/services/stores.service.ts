@@ -1,8 +1,8 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { async } from 'rxjs';
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { CreateClipDto } from 'src/clips/dtos/clip.dto';
 import { Store } from 'src/stores/entities/store.entity';
-import { Story } from 'src/stories/entities/story.entity';
 import { StoriesService } from 'src/stories/services/stories.service';
 import { Master } from 'src/utils/Master';
 
@@ -10,45 +10,24 @@ import { Master } from 'src/utils/Master';
 export class StoresService extends Master {
   constructor(
     private storiesServices: StoriesService,
-    @Inject('mongo') private db,
+    @InjectModel(Store.name) private stores: Model<Store>,
   ) {
     super();
   }
 
-  private stores: Store[] = [
-    {
-      id: 1,
-      name: 'my-store.com',
-    },
-    {
-      id: 2,
-      name: 'adidas.com',
-    },
-  ];
-
-  getAll(): Store[] {
-    return this.stores;
+  getAll(): any {
+    return this.stores.find().exec();
   }
 
-  getStoreById(id: number): Store {
-    return super.findId(this.stores, id)[0];
+  getStoreById(id: string): any {
+    return this.stores.findById(id).exec();
   }
 
-  /*   getStoriesByStore(id: number): Story[] {
-    const allStories: Story[] = this.storiesServices.getAll();
-
-    return allStories.filter(({ storeId }) => storeId === id);
+  getStoriesByStore(id: string) {
+    return this.stores.findById(id).exec();
   }
-   */
 
-  async addStoryStore(id: number, payload: CreateClipDto) {
+  async addStoryStore(id: string, payload: CreateClipDto) {
     return await this.storiesServices.createStory(id, payload);
-  }
-
-  requestDataTest() {
-    const stories = this.db.collection('stories');
-    const data = stories.find().toArray();
-
-    return data;
   }
 }

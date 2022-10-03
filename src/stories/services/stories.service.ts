@@ -2,7 +2,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateClipDto } from 'src/clips/dtos/clip.dto';
-import { Clip } from 'src/clips/entities/clip.entity';
 import { ClipsService } from 'src/clips/services/clips.service';
 import { Story } from 'src/stories/entities/story.entity';
 
@@ -27,15 +26,23 @@ export class StoriesService {
   };
 
   async getAll() {
-    return await this.stories.find().exec();
+    return await this.stories
+      .find()
+      .populate('storeId')
+      .populate('clips')
+      .exec();
   }
 
   async getStory(id: string) {
-    const story = await this.stories.findById(id).exec();
+    const story = await this.stories
+      .findById(id)
+      .populate('storeId')
+      .populate('clips')
+      .exec();
     return story;
   }
 
-  createStory(storeId: number, data: CreateClipDto) {
+  createStory(storeId: string, data: CreateClipDto) {
     const idClip = this.clipsServices.addClip(data);
 
     const dataStory = {
@@ -59,6 +66,8 @@ export class StoriesService {
 
     const story = this.stories
       .findByIdAndUpdate(id, { $set: newData }, { new: true })
+      .populate('storeId')
+      .populate('clips')
       .exec();
 
     if (!story) return;
@@ -71,7 +80,11 @@ export class StoriesService {
 
     this.clipsServices.deleteClips(storyById.clips);
 
-    return this.stories.findByIdAndDelete(id).exec();
+    return this.stories
+      .findByIdAndDelete(id)
+      .populate('storeId')
+      .populate('clips')
+      .exec();
   }
 
   async deleteClip(id: string, clipId: string) {
@@ -85,6 +98,8 @@ export class StoriesService {
 
     const story = this.stories
       .findByIdAndUpdate(id, { $set: newData }, { new: true })
+      .populate('storeId')
+      .populate('clips')
       .exec();
 
     return story;

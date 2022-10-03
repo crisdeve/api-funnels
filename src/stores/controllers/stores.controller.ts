@@ -1,16 +1,8 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  ParseIntPipe,
-  Post,
-} from '@nestjs/common';
-import { Store } from 'src/stores/entities/store.entity';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { StoresService } from 'src/stores/services/stores.service';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateClipDto } from 'src/clips/dtos/clip.dto';
-import { Story } from 'src/stories/entities/story.entity';
+import { MongoIdPipe } from 'src/common/mongo-id.pipe';
 
 @ApiTags('store')
 @Controller('stores')
@@ -18,31 +10,26 @@ export class StoresController {
   constructor(private services: StoresService) {}
 
   @Get()
-  getStores(): Array<Store> {
+  getStores(): Array<any> {
     return this.services.getAll();
   }
-
+  /* 
   @Get(':id')
   getStore(@Param('id', ParseIntPipe) id: number): Store {
     return this.services.getStoreById(id);
   }
+   */
 
-  /* @Get(':id/stories')
-  getStoriesByStore(@Param('id', ParseIntPipe) id: number): Story[] {
+  @Get(':id/stories')
+  getStoriesByStore(@Param('id', MongoIdPipe) id: string) {
     return this.services.getStoriesByStore(id);
   }
-   */
 
   @Post(':id/stories')
   createStory(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', MongoIdPipe) id: string,
     @Body() payload: CreateClipDto,
   ) {
     return this.services.addStoryStore(id, payload);
-  }
-
-  @Get(':id/test')
-  testDB() {
-    return this.services.requestDataTest();
   }
 }

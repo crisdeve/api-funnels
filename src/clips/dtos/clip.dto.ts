@@ -8,9 +8,11 @@ import {
   IsUrl,
   Max,
   Min,
+  ValidateNested,
 } from 'class-validator';
 import { Option } from '../entities/option.entity';
 import { PartialType } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 
 export class CreateClipDto {
   @IsUrl()
@@ -45,6 +47,8 @@ export class CreateClipDto {
 
   @IsArray()
   @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => Option)
   readonly options: Option[];
 }
 

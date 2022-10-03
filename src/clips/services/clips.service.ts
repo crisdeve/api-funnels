@@ -13,38 +13,6 @@ export class ClipsService extends Master {
     super();
   }
 
-  /* private clips: Clip[] = [
-    {
-      id: 1,
-      file: 'https://hardcode/video.mp4',
-      comment: `What's your favorite food ?`,
-      sponsor: true,
-      subscription: false,
-      viewOptions: 1,
-      orderOptions: [0, 3, 5],
-      options: [
-        {
-          id: 0,
-          label: 'Every 1 months',
-        },
-        {
-          id: 5,
-          label: 'Every 2 months',
-        },
-        {
-          id: 3,
-          label: 'Every 3 months',
-        },
-      ],
-    },
-    {
-      id: 2,
-      file: 'https://hardcode/video_2.mp4',
-      sponsor: false,
-      subscription: false,
-    },
-  ]; */
-
   async getAll() {
     return await this.clips.find().exec();
   }
