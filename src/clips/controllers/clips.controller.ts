@@ -12,6 +12,7 @@ import { ClipsService } from '../services/clips.service';
 import { ApiTags } from '@nestjs/swagger';
 import { Clip } from '../entities/clip.entity';
 import { Option } from '../entities/option.entity';
+import { MongoIdPipe } from 'src/common/mongo-id.pipe';
 
 @ApiTags('clips')
 @Controller('clips')
@@ -24,33 +25,32 @@ export class ClipsController {
   }
 
   @Get(':id')
-  getClipById(@Param('id') id: string) {
+  getClipById(@Param('id', MongoIdPipe) id: string) {
     return this.services.getClip(id);
   }
 
-  /* 
   @Put(':id')
   updateClip(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', MongoIdPipe) id: string,
     @Body() payload: UpdateClipDto,
-  ): Clip {
+  ) {
     return this.services.updateClip(id, payload);
   }
 
   @Put(':id/options')
   addOption(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', MongoIdPipe) id: string,
     @Body() payload: CreateOptionDto,
-  ): Option[] {
+  ) {
     return this.services.addNewOption(id, payload);
   }
 
   @Put(':id/options/:idOption')
   updateOption(
-    @Param('id', ParseIntPipe) id: number,
-    @Param('idOption', ParseIntPipe) idOption: number,
+    @Param('id', MongoIdPipe) id: string,
+    @Param('idOption', MongoIdPipe) idOption: number,
     @Body() payload: UpdateOptionDto,
-  ): Option[] {
+  ) {
     return this.services.updateOptions(id, idOption, payload);
-  } */
+  }
 }

@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { Option, OptionSchema } from './option.entity';
 
 @Schema()
 export class Clip extends Document {
@@ -27,14 +28,12 @@ export class Clip extends Document {
   @Prop({
     type: [
       {
-        label: { type: String },
-        image: { type: String },
-        variantId: { type: Number },
-        frequency: { type: Number },
+        type: OptionSchema,
+        ref: Option.name,
       },
     ],
   })
-  options?: Types.Array<Record<string, any>>;
+  options?: Types.Array<Option>;
 }
 
 export const ClipSchema = SchemaFactory.createForClass(Clip);

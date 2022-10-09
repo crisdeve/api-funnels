@@ -1,17 +1,19 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
-export class Option {
-  @IsString()
+@Schema()
+export class Option extends Document {
+  @Prop()
   label: string;
 
-  @IsString()
+  @Prop()
   image: string;
 
-  @IsNumber()
-  @IsOptional()
+  @Prop()
   variantId: number;
 
-  @IsNumber()
-  @IsOptional()
+  @Prop()
   frequency: number;
 }
+
+export const OptionSchema = SchemaFactory.createForClass(Option);

@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateClipDto, UpdateClipDto } from '../dtos/clip.dto';
 import { Master } from 'src/utils/Master';
 import { Clip } from '../entities/clip.entity';
 import { CreateOptionDto, UpdateOptionDto } from '../dtos/option.dto';
-import { Option } from '../entities/option.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class ClipsService extends Master {
@@ -30,59 +30,71 @@ export class ClipsService extends Master {
   }
 
   deleteClips(ids: string[]) {
-    let allDelete = true;
+    let errors = [];
+    let deleted = [];
 
     ids.forEach((id) => {
       const deleteExec = this.clips.findByIdAndDelete(id).exec();
-      if (!deleteExec) allDelete = false;
+      if (!deleteExec) {
+        errors = [`The ${id} id not exist !`, ...errors];
+      } else {
+        deleted = [id, ...deleted];
+      }
     });
 
-    return allDelete;
+    if (errors.length > 0) {
+      return {
+        deleted,
+        failed: errors,
+      };
+    }
+
+    return 'All ids are deleted from DB';
   }
 
   deleteClip(id: string) {
     return this.clips.findByIdAndDelete(id).exec();
   }
 
-  /*
-  updateClip(id: number, data: UpdateClipDto) {
-    const [clip, index] = this.findId(this.clips, id);
+  updateClip(id: string, data: UpdateClipDto) {
+    const clip = this.clips.findByIdAndUpdate(
+      id,
+      { $set: data },
+      { new: true },
+    );
 
-    this.clips[index] = {
-      ...clip,
-      ...data,
-    };
+    if (!clip) return;
 
-    return this.clips[index];
+    return clip;
   }
 
-  addNewOption(id: number, data: CreateOptionDto): Option[] {
-    const [clip, index] = this.findId(this.clips, id);
-    const idOption: number = super.createId(clip.orderOptions);
-
-    const newOption = {
-      id: idOption,
-      ...data,
-    };
-
-    this.clips[index].options.push(newOption);
-    this.clips[index].orderOptions.push(idOption);
-
-    return this.clips[index].options;
+  async addNewOption(id: string, data: CreateOptionDto) {
+    const clip = await this.clips.findById(id);
+    clip.options.push(data);
+    clip.save();
   }
 
-  updateOptions(id: number, idOption: number, data: UpdateOptionDto): Option[] {
-    const [clip, index] = this.findId(this.clips, id);
-    const [option, indexOp] = this.findId(clip.options, idOption);
+  async updateOptions(id: string, idOption: number, data: UpdateOptionDto) {
+    const query = {
+      _id: id,
+      'options._id': idOption,
+    };
 
     const update = {
-      ...option,
-      ...data,
+      $set: {
+        'options.$': {
+          _id: new ObjectId(idOption),
+          ...data,
+        },
+      },
     };
 
-    this.clips[index].options[indexOp] = update;
-
-    return this.clips[index].options;
+    const updateClip = await this.clips.updateOne(query, update);
+    if (updateClip.modifiedCount > 0) {
+      return {
+        message: `Update option ${idOption}`,
+      };
+    }
+    return { message: 'You do not have any changes' };
   }
-  */
 }
