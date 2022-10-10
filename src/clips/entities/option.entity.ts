@@ -7,13 +7,13 @@ export class Option extends Document {
   label: string;
 
   @Prop()
-  image: string;
+  image?: string;
 
   @Prop()
-  variantId: number;
+  variantId?: number;
 
   @Prop()
-  frequency: number;
+  frequency?: number;
 }
 
 export const OptionSchema = SchemaFactory.createForClass(Option);

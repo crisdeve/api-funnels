@@ -42,6 +42,12 @@ export class StoriesService {
     return story;
   }
 
+  async getStoriesByStoreId(id: string) {
+    const stories = await this.stories.find({ storeId: id }).populate('clips');
+
+    return stories;
+  }
+
   createStory(storeId: string, data: CreateClipDto) {
     const idClip = this.clipsServices.addClip(data);
 
@@ -80,28 +86,6 @@ export class StoriesService {
 
     this.clipsServices.deleteClips(storyById.clips);
 
-    return this.stories
-      .findByIdAndDelete(id)
-      .populate('storeId')
-      .populate('clips')
-      .exec();
-  }
-
-  async deleteClip(id: string, clipId: string) {
-    this.clipsServices.deleteClip(clipId);
-
-    const storyById = await this.stories.findById(id).exec();
-
-    const newData = {
-      clips: storyById.clips.filter((id) => id !== clipId),
-    };
-
-    const story = this.stories
-      .findByIdAndUpdate(id, { $set: newData }, { new: true })
-      .populate('storeId')
-      .populate('clips')
-      .exec();
-
-    return story;
+    return this.stories.findByIdAndDelete(id).exec();
   }
 }

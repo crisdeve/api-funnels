@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -52,5 +53,10 @@ export class ClipsController {
     @Body() payload: UpdateOptionDto,
   ) {
     return this.services.updateOptions(id, idOption, payload);
+  }
+
+  @Delete(':id')
+  deleteClip(@Param('id', MongoIdPipe) id: string) {
+    return this.services.deleteClip(id);
   }
 }

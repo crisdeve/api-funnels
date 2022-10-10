@@ -5,6 +5,7 @@ import { CreateClipDto } from 'src/clips/dtos/clip.dto';
 import { Store } from 'src/stores/entities/store.entity';
 import { StoriesService } from 'src/stories/services/stories.service';
 import { Master } from 'src/utils/Master';
+import { CreateStoreDto } from '../dtos/store.dto';
 
 @Injectable()
 export class StoresService extends Master {
@@ -19,12 +20,17 @@ export class StoresService extends Master {
     return this.stores.find().exec();
   }
 
+  createStore(data: CreateStoreDto) {
+    const newStore = new this.stores(data);
+    return newStore.save();
+  }
+
   getStoreById(id: string): any {
     return this.stores.findById(id).exec();
   }
 
   getStoriesByStore(id: string) {
-    return this.stores.findById(id).exec();
+    return this.storiesServices.getStoriesByStoreId(id);
   }
 
   async addStoryStore(id: string, payload: CreateClipDto) {

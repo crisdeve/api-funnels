@@ -31,12 +31,4 @@ export class StoriesController {
   deleteStory(@Param('id', MongoIdPipe) id: string) {
     return this.servicesStories.deleteStory(id);
   }
-
-  @Delete(':id/clips/:clip')
-  deleteClip(
-    @Param('id', MongoIdPipe) id: string,
-    @Param('clip', MongoIdPipe) clipId: string,
-  ) {
-    return this.servicesStories.deleteClip(id, clipId);
-  }
 }
